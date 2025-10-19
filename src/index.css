@@ -1,0 +1,18 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-brand-green: #38704a;
+  --color-brand-gold: #FFD700;
+  --color-brand-light-green: #00FFAA;
+  --color-brand-dark: #0D0D14;
+  --color-brand-highlight: #4A00E0;
+  --color-brand-coral: #FF3366;
+  --font-bbh: 'BBH', sans-serif;
+}
+
+@font-face {
+  font-family: BBH;
+  src: url('/BBH.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
