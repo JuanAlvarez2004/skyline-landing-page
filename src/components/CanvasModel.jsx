@@ -2,18 +2,19 @@ import { Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { useGLTF, Environment, Center } from '@react-three/drei'
 import Model from '@/components/Model'
+import Loader from '@/components/Loader'
 
 // Precargar el modelo para mejor rendimiento
 useGLTF.preload('/skyline.glb')
 
-function CanvasModel() {
+export default function CanvasModel() {
   return (
     <div className='fixed w-full h-full -z-10' >
       <Canvas  
         dpr={[1, 2]}
         camera={{ position: [-9, 1, 8], fov: 18 }}
       >
-        <Suspense fallback={null}>
+        <Suspense fallback={<Loader />}>
           {/* Sistema de iluminación profesional para automóviles */}
           
           {/* Luz ambiental suave para iluminación base */}
@@ -74,5 +75,3 @@ function CanvasModel() {
     </div>
   )
 }
-
-export default CanvasModel
