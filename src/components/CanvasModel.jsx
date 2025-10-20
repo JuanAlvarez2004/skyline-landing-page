@@ -66,7 +66,7 @@ const CanvasModel = forwardRef(({ onModelReady }, ref) => {
 
         {/* Environment map para reflejos realistas en la pintura */}
         <Environment
-          preset="park"
+          preset="warehouse"
           background={false}
         />
         

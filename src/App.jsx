@@ -6,13 +6,9 @@ import { useGSAP } from "@gsap/react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { ReactLenis } from 'lenis/react'
-import { useGLTF } from "@react-three/drei"
 
 // Registrar el plugin ScrollTrigger
 gsap.registerPlugin(ScrollTrigger)
-
-// Precargar el modelo para mejor rendimiento
-useGLTF.preload('/skyline.glb')
 
 function App() {
   const modelRef = useRef()
@@ -31,32 +27,54 @@ function App() {
 
   // Callback optimizado que se ejecuta cuando el modelo está listo
   const handleModelReady = useCallback((modelGroup) => {
-    
+
     // Asegurar que el ref esté correctamente asignado
     if (modelGroup && !modelRef.current) {
       modelRef.current = modelGroup
     }
-    
+
     // Set state para trigger useGSAP
     setModelLoaded(true)
   }, []) // Sin dependencias ya que solo cambia el estado
 
   useGSAP(() => {
     if (!modelLoaded || !modelRef.current) return
-    
+
     // Forzar refresh de ScrollTrigger después de que el modelo esté listo
     ScrollTrigger.refresh()
 
-    // Animación inicial de entrada (esta debería funcionar inmediatamente)
+    // const timelineIntro = gsap.timeline({ duration: 1.5, ease: "power3.out" })
+
+    // Animación inicial de entrada 
     gsap.fromTo(modelRef.current.position, {
       x: 1,
       z: 1
     }, {
       x: 0,
       z: 0,
-      duration: 1.5,
+      duration: 1.5, 
       ease: "power3.out"
     })
+    gsap.from("#flower-left-home", {
+      x: -50,
+      duration: 1.5, 
+      ease: "power3.out"
+    }, "<")
+    gsap.from("#flower-right-home", {
+      x: 50,
+      duration: 1.5, 
+      ease: "power3.out"
+    }, "<")
+    gsap.from("#sun", {
+      alpha: 0,
+      duration: 1.5, 
+      ease: "power3.out"
+    }, "<")
+    gsap.from("#title-container-home", {
+      alpha: 0,
+      duration: 1.5, 
+      ease: "power3.out"
+    }, "<")
 
     // Pequeño delay para asegurar que la animación inicial termine
     const setupScrollAnimations = () => {
@@ -86,7 +104,16 @@ function App() {
           duration: 1,
           ease: "none"
         }, 0)
-        
+        .to(modelRef.current.position, {
+          y: .5,
+          duration: 1,
+          ease: "none"
+        }, 0)
+        .to("#sun", {
+          height: "120%",
+          duration: 1,
+        }, 0)
+
         // FASE 2: Sección Back -> FrontLeft (33% - 66% del scroll total)
         .to(modelRef.current.rotation, {
           y: 1,
@@ -99,10 +126,15 @@ function App() {
           duration: 1,
           ease: "none"
         }, 1)
-        
+        .to("#sun", {
+          height: "+=120%",
+          duration: 1,
+        }, 1)
+
         // FASE 3: Sección FrontLeft -> Front (66% - 100% del scroll total)
         .to(modelRef.current.rotation, {
           y: 2.3,
+          z: -.05,
           duration: 1,
           ease: "none"
         }, 2)
@@ -119,6 +151,10 @@ function App() {
           duration: 1,
           ease: "none"
         }, 2)
+        .to("#sun", {
+          height: "+=160%",
+          duration: 1,
+        }, 2)
 
     }
 
@@ -133,18 +169,17 @@ function App() {
   return (
     <div id="app" className="flex flex-col w-full bg-brand-light-green/8">
       <ReactLenis root options={{ autoRaf: false }} ref={lenisRef} />
-      
+
       {/* Loader personalizado mientras el modelo no está listo */}
       {!modelLoaded && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
           <div className="flex flex-col items-center space-y-4">
             <div className="w-16 h-16 border-4 border-brand-green/30 border-t-brand-green rounded-full animate-spin"></div>
-            <div className="text-brand-green font-bbh text-xl">Preparando Skyline GT-R...</div>
-            <div className="text-brand-green/70 text-sm">Configurando modelo 3D</div>
+            <div className="text-brand-green font-bbh text-xl">Setting Skyline GT-R...</div>
           </div>
         </div>
       )}
-      
+
       <CanvasModel ref={modelRef} onModelReady={handleModelReady} />
       <Home />
       <Back />
