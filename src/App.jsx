@@ -43,8 +43,6 @@ function App() {
     // Forzar refresh de ScrollTrigger después de que el modelo esté listo
     ScrollTrigger.refresh()
 
-    // const timelineIntro = gsap.timeline({ duration: 1.5, ease: "power3.out" })
-
     // Animación inicial de entrada 
     gsap.fromTo(modelRef.current.position, {
       x: 1,
@@ -167,15 +165,15 @@ function App() {
   }, [modelLoaded])
 
   return (
-    <div id="app" className="flex flex-col w-full bg-brand-light-green/8">
+    <div id="app" className="flex flex-col w-full overflow-clip bg-brand-light-green/8">
       <ReactLenis root options={{ autoRaf: false }} ref={lenisRef} />
 
       {/* Loader personalizado mientras el modelo no está listo */}
       {!modelLoaded && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
           <div className="flex flex-col items-center space-y-4">
-            <div className="w-16 h-16 border-4 border-brand-green/30 border-t-brand-green rounded-full animate-spin"></div>
-            <div className="text-brand-green font-bbh text-xl">Setting Skyline GT-R...</div>
+            <div className="size-10 md:size-16 border-4 border-brand-green/30 border-t-brand-green rounded-full animate-spin"></div>
+            <div className="text-brand-green font-bbh text-xs md:text-xl">Setting Skyline GT-R...</div>
           </div>
         </div>
       )}

@@ -2,6 +2,7 @@ import { forwardRef, useEffect, Suspense } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { Environment, Center } from '@react-three/drei'
 import Model from '@/components/Model'
+import useMediaQuery from '@/hooks/useMediaQuery'
 
 // Componente interno que maneja la lógica dentro del Canvas
 function ModelGroup({ modelRef, onModelReady }) {
@@ -32,11 +33,18 @@ function ModelGroup({ modelRef, onModelReady }) {
 }
 
 const CanvasModel = forwardRef(({ onModelReady }, ref) => {
+  const isMobile = useMediaQuery()
+  
+  let cameraProps = {
+    fov: isMobile ? 40 : 18,
+    position: isMobile ? [-9, 2, 8] : [-9, 1, 8]
+  } 
+
   return (
     <div className='fixed w-full h-full -z-10' >
       <Canvas 
         dpr={[1, 2]} 
-        camera={{ position: [-9, 1, 8], fov: 18 }}
+        camera={{ position: cameraProps.position, fov: cameraProps.fov }} 
         performance={{ min: 0.5 }}
         frameloop="always"
         gl={{ 
@@ -72,7 +80,7 @@ const CanvasModel = forwardRef(({ onModelReady }, ref) => {
         
         {/* Modelo 3D - Posicionado en el centro inferior con Suspense */}
         <Suspense fallback={null}>
-          <ModelGroup modelRef={ref} onModelReady={onModelReady} />
+          <ModelGroup isMobile={isMobile} modelRef={ref} onModelReady={onModelReady} />
         </Suspense>
       </Canvas>
     </div>
