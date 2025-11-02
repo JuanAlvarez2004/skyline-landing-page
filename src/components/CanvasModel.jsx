@@ -43,16 +43,20 @@ const CanvasModel = forwardRef(({ onModelReady }, ref) => {
   return (
     <div className='fixed w-full h-full -z-10' >
       <Canvas 
-        dpr={[1, 2]} 
+        dpr={isMobile ? [0.5, 1] : [1, 2]} // Reduce resolución en móvil
         camera={{ position: cameraProps.position, fov: cameraProps.fov }} 
         performance={{ min: 0.5 }}
         frameloop="always"
         gl={{ 
-          antialias: true,
+          antialias: !isMobile, // Desactiva antialiasing en móvil
           alpha: true,
-          powerPreference: "high-performance",
+          powerPreference: isMobile ? "low-power" : "high-performance",
           stencil: false,
-          depth: true
+          depth: true,
+          ...(isMobile && { // Configuraciones adicionales para móvil
+            precision: 'lowp',
+            logarithmicDepthBuffer: false
+          })
         }}
       >
         {/* Sistema de iluminación profesional para automóviles */}
@@ -61,8 +65,8 @@ const CanvasModel = forwardRef(({ onModelReady }, ref) => {
         <directionalLight
           position={[5, 5, 5]}
           intensity={1.5}
-          castShadow
-          shadow-mapSize={[2048, 2048]}
+          castShadow={!isMobile} // Desactiva sombras en móvil
+          shadow-mapSize={isMobile ? [512, 512] : [2048, 2048]} // Reduce calidad de sombras
         />
 
         {/* Luz trasera (Back Light) - resalta los bordes y crea profundidad */}
@@ -76,6 +80,7 @@ const CanvasModel = forwardRef(({ onModelReady }, ref) => {
         <Environment
           preset="warehouse"
           background={false}
+          resolution={isMobile ? 256 : 1024} // Reduce calidad de environment map en móvil
         />
         
         {/* Modelo 3D - Posicionado en el centro inferior con Suspense */}
